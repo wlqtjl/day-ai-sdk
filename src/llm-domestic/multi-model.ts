@@ -1,11 +1,13 @@
 import { LLMClient, Message, ModelConfig } from './base';
 import { DoubaoClient } from './doubao';
 import { QianwenClient } from './qianwen';
+import { XinghuoClient } from './xinghuo';
+import { GLMClient } from './glm';
 
 /**
  * 模型类型
  */
-export type ModelType = 'doubao' | 'qianwen';
+export type ModelType = 'doubao' | 'qianwen' | 'xinghuo' | 'glm';
 
 /**
  * 多模型管理器
@@ -28,6 +30,12 @@ export class MultiModelManager {
         break;
       case 'qianwen':
         client = new QianwenClient(config);
+        break;
+      case 'xinghuo':
+        client = new XinghuoClient(config);
+        break;
+      case 'glm':
+        client = new GLMClient(config);
         break;
       default:
         throw new Error(`Unsupported model type: ${type}`);
@@ -120,6 +128,10 @@ export class MultiModelManager {
         return 'doubao';
       case 'technical':
         return 'qianwen';
+      case 'academic':
+        return 'glm';
+      case 'multilingual':
+        return 'xinghuo';
       default:
         return this.defaultModel;
     }

@@ -1,6 +1,8 @@
 import { BaseLLM, LLMClient, ModelConfig, Message } from './base';
 import { DoubaoClient } from './doubao';
 import { QianwenClient } from './qianwen';
+import { XinghuoClient } from './xinghuo';
+import { GLMClient } from './glm';
 import { MultiModelManager, ModelType } from './multi-model';
 
 /**
@@ -27,6 +29,22 @@ export class DomesticLLM {
    */
   public registerQianwen(config: ModelConfig): void {
     this.multiModelManager.registerModel('qianwen', config);
+  }
+
+  /**
+   * 注册讯飞星火模型
+   * @param config 模型配置
+   */
+  public registerXinghuo(config: ModelConfig): void {
+    this.multiModelManager.registerModel('xinghuo', config);
+  }
+
+  /**
+   * 注册智谱GLM模型
+   * @param config 模型配置
+   */
+  public registerGLM(config: ModelConfig): void {
+    this.multiModelManager.registerModel('glm', config);
   }
 
   /**
@@ -112,6 +130,8 @@ export {
   Message,
   DoubaoClient,
   QianwenClient,
+  XinghuoClient,
+  GLMClient,
   MultiModelManager,
   ModelType
 };
