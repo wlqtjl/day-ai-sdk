@@ -1,15 +1,15 @@
 {
-  "name": "day-ai-desktop-demo",
+  "name": "day-ai-desktop-demo-test",
   "version": "0.1.0",
   "description": "Day AI Desktop Demo - An AI chat app with Day AI MCP integration",
-  "main": "dist-electron/main.mjs",
+  "main": "dist-electron/main.js",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "build:vite": "vite build",
     "preview": "vite preview",
-    "electron:dev": "electron ."
+    "electron:dev": "electron --no-sandbox ."
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",

@@ -1,16 +1,9 @@
-// Note types
 export interface Note {
   id: string
   title: string
   content: string
   createdAt: string
   updatedAt: string
-}
-
-// Config types
-export interface AppConfig {
-  anthropicApiKey?: string
-  mcpServers?: MCPServerConfig[]
 }
 
 // Chat types
@@ -78,4 +71,67 @@ export interface MCPTool {
   name: string
   description: string
   inputSchema: Record<string, unknown>
+}
+
+// App config type
+export interface AppConfig {
+  anthropicApiKey?: string
+  doubaoApiKey?: string
+  qianwenApiKey?: string
+  llmType?: 'claude' | 'doubao' | 'qianwen'
+  mcpServers?: MCPServerConfig[]
+}
+
+// DayAI API interface
+export interface DayAIChatAPI {
+  sendMessage: (noteId: string, message: string) => Promise<AgentResponse>
+  executeToolAndContinue: (noteId: string, toolCall: ToolCall) => Promise<{ toolResult: ToolResult; response: AgentResponse }>
+  getHistory: (noteId: string) => Promise<ChatMessage[]>
+  saveMessage: (noteId: string, message: ChatMessage) => Promise<void>
+  clearHistory: (noteId: string) => Promise<void>
+  abort: () => Promise<void>
+  onStreamChunk: (callback: (chunk: StreamChunk) => void) => () => void
+  onStreamEnd: (callback: () => void) => () => void
+  onStreamError: (callback: (error: string) => void) => () => void
+  onNoteUpdated: (callback: (noteId: string) => void) => () => void
+  onNotesChanged: (callback: () => void) => () => void
+}
+
+export interface DayAIMCPAPI {
+  getServers: () => Promise<MCPServerConfig[]>
+  connect: (serverId: string) => Promise<MCPTool[]>
+  disconnect: (serverId: string) => Promise<void>
+  listTools: () => Promise<MCPTool[]>
+  callTool: (serverId: string, toolName: string, args: Record<string, unknown>) => Promise<unknown>
+}
+
+export interface DayAIApi {
+  // Notes API
+  getNotes: () => Promise<Note[]>
+  getNote: (id: string) => Promise<Note | null>
+  createNote: () => Promise<Note>
+  updateNote: (id: string, updates: Partial<Note>) => Promise<Note | null>
+  deleteNote: (id: string) => Promise<boolean>
+
+  // Platform API
+  getPlatform: () => Promise<'darwin' | 'win32' | 'linux'>
+  getIsFullscreen: () => Promise<boolean>
+  onFullscreenChange: (callback: (isFullscreen: boolean) => void) => () => void
+
+  // Config API
+  getConfig: () => Promise<AppConfig>
+  setConfig: (config: Partial<AppConfig>) => Promise<AppConfig>
+
+  // Chat API
+  chat: DayAIChatAPI
+
+  // MCP API
+  mcp: DayAIMCPAPI
+}
+
+// Type declaration for renderer process
+declare global {
+  interface Window {
+    dayai: DayAIApi
+  }
 }

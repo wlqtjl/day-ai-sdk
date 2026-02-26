@@ -10,6 +10,13 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 dotenvConfig({ path: path.join(__dirname, '..', '.env') })
 
+// Disable sandbox for development
+
+// Redirect user data to avoid permission issues - set before any other app usage
+const userDataPath = path.join(__dirname, '..', '.temp_userdata')
+app.setPath('userData', userDataPath)
+console.log(`UserData path set to: ${userDataPath}`)
+
 import { AgentService, ChatMessage, NoteContext, StreamChunk } from './services/AgentService'
 import { executeToolCall } from './services/ToolExecutor'
 import * as OAuthService from './services/OAuthService'
@@ -19,8 +26,8 @@ import * as MCPClientService from './services/MCPClientService'
 let mainWindow: BrowserWindow | null = null
 let agentService: AgentService | null = null
 
-// App data paths
-const APP_DATA_DIR = path.join(app.getPath('appData'), 'DayAIDemo')
+// App data paths - use our custom userData path
+const APP_DATA_DIR = path.join(userDataPath, 'DayAIDemo')
 const NOTES_PATH = path.join(APP_DATA_DIR, 'notes.json')
 const CONFIG_PATH = path.join(APP_DATA_DIR, 'config.json')
 const CHATS_DIR = path.join(APP_DATA_DIR, 'chats')
@@ -150,6 +157,7 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.mjs'),
       nodeIntegration: false,
       contextIsolation: true,
+      sandbox: false,
     },
   })
 

@@ -96,7 +96,7 @@ function App() {
   }, [])
 
   return (
-    <div className="flex flex-col h-screen bg-surface-950 text-neutral-100">
+    <div className="flex flex-col h-screen bg-surface-100 text-neutral-900">
       {/* Top bar */}
       <TopBar
         leftSidebarVisible={leftSidebarVisible}
