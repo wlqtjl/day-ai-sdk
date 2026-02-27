@@ -4,6 +4,7 @@ import Sidebar from './components/Sidebar'
 import ChatPane from './components/ChatPane'
 import SettingsModal from './components/SettingsModal'
 import NoteEditor from './components/NoteEditor'
+import CustomerProfileManager from './components/CustomerProfileManager'
 import type { Note } from './types'
 
 function App() {
@@ -17,6 +18,9 @@ function App() {
   // Settings modal state
   const [showSettings, setShowSettings] = useState(false)
   const [configVersion, setConfigVersion] = useState(0)
+
+  // Mode state (notes or customer profile)
+  const [mode, setMode] = useState<'notes' | 'customer-profile'>('notes')
 
   const currentNote = notes.find((n) => n.id === currentNoteId) || null
 
@@ -105,6 +109,8 @@ function App() {
         onToggleRightSidebar={() => setRightSidebarVisible((prev) => !prev)}
         onNewNote={handleCreateNote}
         onOpenSettings={() => setShowSettings(true)}
+        mode={mode}
+        onModeChange={setMode}
       />
 
       {/* Main layout */}
@@ -121,25 +127,29 @@ function App() {
           </div>
         )}
 
-        {/* Main content - Editor */}
+        {/* Main content */}
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          {currentNote ? (
-            <NoteEditor
-              note={currentNote}
-              onUpdateNote={handleUpdateNote}
-            />
-          ) : (
-            <div className="flex items-center justify-center h-full text-white/50">
-              <div className="text-center">
-                <p className="mb-4">No note selected</p>
-                <button
-                  onClick={handleCreateNote}
-                  className="px-4 py-2 rounded-xl glass-button text-white font-medium"
-                >
-                  Create a note
-                </button>
+          {mode === 'notes' ? (
+            currentNote ? (
+              <NoteEditor
+                note={currentNote}
+                onUpdateNote={handleUpdateNote}
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full text-white/50">
+                <div className="text-center">
+                  <p className="mb-4">No note selected</p>
+                  <button
+                    onClick={handleCreateNote}
+                    className="px-4 py-2 rounded-xl glass-button text-white font-medium"
+                  >
+                    Create a note
+                  </button>
+                </div>
               </div>
-            </div>
+            )
+          ) : (
+            <CustomerProfileManager />
           )}
         </div>
 

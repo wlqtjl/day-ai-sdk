@@ -1,4 +1,5 @@
 import * as dotenv from "dotenv";
+import { AIService } from './ai';
 
 // Load environment variables
 dotenv.config();
@@ -66,6 +67,7 @@ export class DayAIClient {
   private currentAccessToken: string | null = null;
   private tokenExpiresAt: number = 0;
   private mcpInitialized: boolean = false;
+  private aiService: AIService;
 
   constructor(config?: Partial<DayAIConfig>) {
     // Load from environment variables with config overrides
@@ -87,6 +89,17 @@ export class DayAIClient {
         'Missing required OAuth credentials. Please run "npm run oauth:setup" or provide clientId, clientSecret, and refreshToken.'
       );
     }
+
+    // Initialize AI service
+    this.aiService = new AIService();
+    this.aiService.initialize();
+  }
+
+  /**
+   * Get AI service instance
+   */
+  public getAIService(): AIService {
+    return this.aiService;
   }
 
   /**

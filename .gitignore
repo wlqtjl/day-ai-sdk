@@ -99,3 +99,6 @@ jspm_packages/
 .vscode-test
 # Snyk Security Extension - AI Rules (auto-generated)
 .cursor/rules/snyk_rules.mdc
+
+# Temporary user data
+.temp_userdata/

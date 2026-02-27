@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { IconLayoutSidebar, IconSparkles, IconPlus, IconSettings } from '@tabler/icons-react'
+import { IconLayoutSidebar, IconSparkles, IconPlus, IconSettings, IconUsers, IconFileText } from '@tabler/icons-react'
 
 interface TopBarProps {
   leftSidebarVisible: boolean
@@ -8,6 +8,8 @@ interface TopBarProps {
   onToggleRightSidebar: () => void
   onNewNote: () => void
   onOpenSettings: () => void
+  mode: 'notes' | 'customer-profile'
+  onModeChange: (mode: 'notes' | 'customer-profile') => void
 }
 
 export default function TopBar({
@@ -17,6 +19,8 @@ export default function TopBar({
   onToggleRightSidebar,
   onNewNote,
   onOpenSettings,
+  mode,
+  onModeChange,
 }: TopBarProps) {
   const [isFullscreen, setIsFullscreen] = useState(false)
 
@@ -28,10 +32,36 @@ export default function TopBar({
 
   return (
     <div className="h-[52px] flex-shrink-0 glass-panel border-b border-white/[0.06] drag-region flex items-center justify-between px-3">
-      {/* Left side - traffic lights area + sidebar toggle + new note */}
+      {/* Left side - traffic lights area + mode switch + sidebar toggle + new note */}
       <div className="flex items-center gap-1 no-drag">
         {/* Spacer for traffic lights (macOS) - hide in fullscreen */}
         {!isFullscreen && <div className="w-[70px]" />}
+
+        {/* Mode switch */}
+        <div className="flex items-center bg-white/5 rounded-lg p-0.5">
+          <button
+            onClick={() => onModeChange('notes')}
+            className={`p-1.5 rounded-md transition-all duration-200 ${
+              mode === 'notes'
+                ? 'bg-white/10 text-white'
+                : 'text-white/60 hover:text-white'
+            }`}
+            title="Notes mode"
+          >
+            <IconFileText size={18} stroke={1.5} />
+          </button>
+          <button
+            onClick={() => onModeChange('customer-profile')}
+            className={`p-1.5 rounded-md transition-all duration-200 ${
+              mode === 'customer-profile'
+                ? 'bg-white/10 text-white'
+                : 'text-white/60 hover:text-white'
+            }`}
+            title="Customer profile mode"
+          >
+            <IconUsers size={18} stroke={1.5} />
+          </button>
+        </div>
 
         <button
           onClick={onToggleLeftSidebar}
@@ -45,13 +75,15 @@ export default function TopBar({
           <IconLayoutSidebar size={20} stroke={1.5} />
         </button>
 
-        <button
-          onClick={onNewNote}
-          className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200"
-          title="New note"
-        >
-          <IconPlus size={20} stroke={1.5} />
-        </button>
+        {mode === 'notes' && (
+          <button
+            onClick={onNewNote}
+            className="p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200"
+            title="New note"
+          >
+            <IconPlus size={20} stroke={1.5} />
+          </button>
+        )}
       </div>
 
       {/* Center spacer for drag region */}

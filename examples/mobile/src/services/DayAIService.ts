@@ -253,6 +253,49 @@ export class DayAIService {
       return 'Tool executed';
     }
   }
+
+  /**
+   * 分析语音内容
+   */
+  async analyzeVoiceContent(transcript: string): Promise<{
+    transcript: string;
+    keyPoints: string[];
+    customerNeeds: string[];
+    projectDetails: string[];
+  }> {
+    try {
+      // 这里应该调用AI模型进行分析
+      // 暂时返回模拟数据
+      return {
+        transcript,
+        keyPoints: [
+          'CRM系统需求',
+          '预算50万',
+          '3个月实施周期',
+          '项目负责人张总'
+        ],
+        customerNeeds: [
+          '新的CRM系统',
+          '快速实施',
+          '符合预算'
+        ],
+        projectDetails: [
+          '预算: 50万',
+          '时间: 3个月',
+          '负责人: 张总',
+          '联系方式: 13800138000'
+        ]
+      };
+    } catch (error) {
+      console.error('Error analyzing voice content:', error);
+      return {
+        transcript,
+        keyPoints: [],
+        customerNeeds: [],
+        projectDetails: []
+      };
+    }
+  }
 }
 
 export const dayAIService = new DayAIService();

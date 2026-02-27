@@ -18,6 +18,7 @@ import { useChat } from '../hooks';
 import { MessageBubble } from './MessageBubble';
 import { SettingsSheet } from './SettingsSheet';
 import { ToolCallDisplay } from './ToolCallDisplay';
+import { VoiceRecorder } from './VoiceRecorder';
 
 export function ChatScreen() {
   const {
@@ -38,6 +39,7 @@ export function ChatScreen() {
 
   const [inputText, setInputText] = useState('');
   const [settingsVisible, setSettingsVisible] = useState(false);
+  const [voiceRecorderVisible, setVoiceRecorderVisible] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
 
   // Auto-scroll to bottom when new messages arrive
@@ -67,6 +69,14 @@ export function ChatScreen() {
   const handleClearChat = () => {
     clearMessages();
     setSettingsVisible(false);
+  };
+
+  const handleVoiceAnalysisComplete = (result: any) => {
+    // 可以将分析结果发送到聊天界面
+    if (result) {
+      const analysisMessage = `对话分析结果：\n\n关键要点：\n${result.keyPoints.join('\n')}\n\n客户需求：\n${result.customerNeeds.join('\n')}\n\n项目详情：\n${result.projectDetails.join('\n')}`;
+      sendMessage(analysisMessage);
+    }
   };
 
   const isInputDisabled = chatState !== 'idle' || !apiKey;
@@ -129,15 +139,26 @@ export function ChatScreen() {
                     </View>
                   </View>
                 </View>
-                <Pressable
-                  onPress={() => setSettingsVisible(true)}
-                  className="p-2 rounded-full"
-                  style={{
-                    backgroundColor: 'rgba(74, 154, 154, 0.1)',
-                  }}
-                >
-                  <Ionicons name="settings-outline" size={20} color="#4a9a9a" />
-                </Pressable>
+                <View style={{ flexDirection: 'row' }}>
+                  <Pressable
+                    onPress={() => setVoiceRecorderVisible(true)}
+                    className="p-2 rounded-full mr-2"
+                    style={{
+                      backgroundColor: 'rgba(74, 154, 154, 0.1)',
+                    }}
+                  >
+                    <Ionicons name="mic-outline" size={20} color="#4a9a9a" />
+                  </Pressable>
+                  <Pressable
+                    onPress={() => setSettingsVisible(true)}
+                    className="p-2 rounded-full"
+                    style={{
+                      backgroundColor: 'rgba(74, 154, 154, 0.1)',
+                    }}
+                  >
+                    <Ionicons name="settings-outline" size={20} color="#4a9a9a" />
+                  </Pressable>
+                </View>
               </View>
             </GlassView>
           </View>
@@ -310,6 +331,12 @@ export function ChatScreen() {
         onClearChat={handleClearChat}
         onConnectDayAI={connectDayAI}
         onDisconnectDayAI={disconnectDayAI}
+      />
+
+      <VoiceRecorder
+        visible={voiceRecorderVisible}
+        onClose={() => setVoiceRecorderVisible(false)}
+        onAnalysisComplete={handleVoiceAnalysisComplete}
       />
     </View>
   );

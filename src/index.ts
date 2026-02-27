@@ -41,5 +41,8 @@ export {
 // API module
 export { default as apiServer } from './api/server';
 
+// Security module
+export { SecurityService, type User, type Permission, type AuditLog } from './security';
+
 // Re-export the client as default export
 export { DayAIClient as default } from './client';

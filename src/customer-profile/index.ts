@@ -38,6 +38,54 @@ export class CustomerProfileService {
     
     this.visualizationService = new VisualizationService();
     this.industryTemplateManager = new IndustryTemplateManager();
+    
+    // 注册数据变更事件监听器
+    this.dataIntegrationService.on((event) => {
+      this.handleDataChangeEvent(event);
+    });
+  }
+
+  /**
+   * 处理数据变更事件
+   */
+  private handleDataChangeEvent(event: any): void {
+    console.log('Data change event:', event.type, event.data);
+    
+    // 根据事件类型进行处理
+    switch (event.type) {
+      case 'customer_updated':
+        // 客户更新事件
+        console.log('Customer updated:', event.data.customerId);
+        break;
+      case 'new_interaction':
+        // 新互动事件
+        console.log('New interaction:', event.data.customerId, event.data.interaction.type);
+        break;
+      case 'data_synced':
+        // 数据同步完成事件
+        console.log('Data synced:', event.data.totalCustomers, 'customers');
+        break;
+      case 'system_status':
+        // 系统状态事件
+        console.log('System status:', event.data.syncStatus);
+        break;
+      default:
+        console.log('Unknown event type:', event.type);
+    }
+  }
+
+  /**
+   * 注册事件监听器
+   */
+  on(listener: (event: any) => void): () => void {
+    return this.dataIntegrationService.on(listener);
+  }
+
+  /**
+   * 获取系统状态
+   */
+  getSystemStatus(): any {
+    return this.dataIntegrationService.getSystemStatus();
   }
 
   /**
@@ -88,6 +136,10 @@ export class CustomerProfileService {
       sentimentAnalysis: this.visualizationService.generateSentimentAnalysis(profile.interactions),
       interestTagCloud: this.visualizationService.generateInterestTagCloud(profile),
       insightCards: this.visualizationService.generateInsightCards(profile.insights),
+      behaviorHeatmap: this.visualizationService.generateBehaviorHeatmap(profile.interactions),
+      trendAnalysis: this.visualizationService.generateTrendAnalysis(profile.interactions),
+      dashboardConfig: this.visualizationService.generateDashboardConfig(profile),
+      dataExplorationConfig: this.visualizationService.generateDataExplorationConfig(profile),
     };
   }
 
